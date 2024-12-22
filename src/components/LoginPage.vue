@@ -45,15 +45,8 @@
 </template>
 
 <script>
-import textFile from '!!raw-loader!./file.txt';
-export default {
-    name: 'LoginPage',
-    data() {
-        return {
-             arr: textFile
-        }
-    }
-}
+
+
 </script>
 
 <style scoped>
