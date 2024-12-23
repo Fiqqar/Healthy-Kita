@@ -75,6 +75,7 @@ export default {
                 this.loading = false;  // Stop loading if passwords don't match
                 return;
             }
+            
             axios.post(`${arr}/api/signup/user`, {
                 username: username,
                 email: email,
