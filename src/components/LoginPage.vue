@@ -27,7 +27,7 @@
 
                     <div class="mb-3 d-flex justify-content-between align-items-center">
                         <div class="form-check me-1">
-                            <input class="form-check-input border-success" type="checkbox" id="remember-me" />
+                            <input class="form-check-input border-success" type="checkbox" id="remember-me"  value="true"/>
                             <label class="form-check-label" for="remember-me">
                                 Remember me
                             </label>

@@ -75,7 +75,7 @@ export default {
                 this.loading = false;  // Stop loading if passwords don't match
                 return;
             }
-            axios.post(`${this.arr}/api/signup/user`, {
+            axios.post(`${arr}/api/signup/user`, {
                 username: username,
                 email: email,
                 password: password,  
@@ -93,11 +93,10 @@ export default {
                 };
                 this.loading = false;  // Stop loading when request is successful
 
-               const encKeyFetch = await axios.get(`${arr}/oauth/encKey/get`,{
-                withCredentials: true
-               })
-               console.log(encKeyFetch.data)
-
+                const encKeyFetch = await axios.get(`${arr}/oauth/encKey/get`,{
+                })
+                const encKey = encKeyFetch.headers['enckey']
+                console.debug("encKey", encKey) // on debugging, fiqqar please store encKey at indexedDB
 
             })
             .catch((error) => {
