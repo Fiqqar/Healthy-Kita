@@ -78,10 +78,11 @@ export default {
             axios.post(`${this.arr}/api/signup/user`, {
                 username: username,
                 email: email,
-                password: password
-            })
-            .then((response) => {
-                console.log("debugging", response.data);
+                password: password,  
+            },{withCredentials:true
+})
+            
+            .then(async (response) => {
                 this.success = true;
                 this.response = response.data;
                 this.userData = {
@@ -91,6 +92,13 @@ export default {
                     confirmpw: ""
                 };
                 this.loading = false;  // Stop loading when request is successful
+
+               const encKeyFetch = await axios.get(`${arr}/oauth/encKey/get`,{
+                withCredentials: true
+               })
+               console.log(encKeyFetch.data)
+
+
             })
             .catch((error) => {
                 console.log(error);
