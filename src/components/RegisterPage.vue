@@ -23,6 +23,26 @@
                         <input type="password" id="confirmPassword" class="form-control"
                             placeholder="Konfirmasi Password" name="confirmpw" v-model="userData.confirmpw" required>
                     </div>
+                    <div class="mb-3">
+                        <label for="age" class="form-label">Umur</label>
+                        <input type="number" id="age" class="form-control"
+                            placeholder="Masukkan Umur" name="age" v-model="userData.age" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="weight" class="form-label">Berat Badan</label>
+                        <input type="number" id="weight" class="form-control"
+                            placeholder="Masukkan Berat Badan" name="weight" v-model="userData.weight" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="tall" class="form-label">Tinggi Badan</label>
+                        <input type="number" id="tall" class="form-control"
+                            placeholder="Masukkan Tinggi Badan (cm)" name="tall" v-model="userData.tall" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="intensActivity" class="form-label">Tingkat Intens Aktifitas dalam Seminggu</label>
+                        <input type="number" id="intensActivity" class="form-control"
+                            placeholder="Masukkan Tingkat Intens Aktifitas mu dalam Seminggu" name="intensActivity" v-model="userData.intensActivity" required>
+                    </div>
                     <button type="submit" class="btn btn-success w-100 animate" @click="registerData" :disabled="loading">Register</button>
                 <div class="text-center mt-3">
                     <p id="login1">Sudah punya akun? </p><router-link to="/login"
@@ -51,7 +71,11 @@ export default {
                 username: "",
                 email: "",
                 password: "",
-                confirmpw: ""
+                confirmpw: "",
+                age: "",
+                weight: "",
+                tall: "",
+                intensActivity: ""
             },
             success: false,
             error: false,
@@ -64,8 +88,8 @@ export default {
             this.success = false;
             this.error = false;
             this.loading = true;  // Start loading
-            const { username, email, password, confirmpw } = this.userData;
-            if (!username || !password || !email || !confirmpw){
+            const { username, email, password, confirmpw, age, weight, tall, intensActivity } = this.userData;
+            if (!username || !password || !email || !confirmpw || !age || !weight || !tall || !intensActivity) {
                 alert("Please fill out all required fields.");
                 this.loading = false;  // Stop loading if validation fails
                 return;
@@ -78,7 +102,11 @@ export default {
             axios.post(`${this.arr}/api/signup/user`, {
                 username: username,
                 email: email,
-                password: password,  
+                password: password,
+                age: age,
+                weight: weight,
+                tall: tall,
+                intensActivity: intensActivity
             },{withCredentials:true
 })
             
@@ -89,38 +117,12 @@ export default {
                     username: "",
                     email: "",
                     password: "",
-                    confirmpw: ""
+                    confirmpw: "",
+                    age: "",
+                    weight: "",
+                    tall: "",
+                    intensActivity: ""
                 };
-                this.loading = false;  // Stop loading when request is successful
-
-                const encKeyFetch = await axios.get(`${arr}/oauth/encKey/get`,{
-                withCredentials: true
-                });
-                const encKey = encKeyFetch.data.encKey;
-                const ivKey = encKeyFetch.data.ivKey;
-                const dbRequest = indexedDB.open('userKeysDB', 1);
-
-                dbRequest.onupgradeneeded = (event) => {
-                    let db = event.target.result;
-                    if (!db.objectStoreNames.contains('keys')) {
-                        db.createObjectStore('keys', { keyPath: 'id' });
-                    }
-                };
-                dbRequest.onsuccess = (event) => {
-                    const db = event.target.result;
-                    const transaction = db.transaction('keys', 'readwrite');
-                    const store = transaction.objectStore('keys');
-                    store.put({ id: 'encKey', value: encKey });
-                    store.put({ id: 'ivKey', value: ivKey });
-                    transaction.oncomplete = () => {
-                        console.log('encKey and ivKey stored successfully');
-                    };
-                };
-
-        dbRequest.onerror = (event) => {
-            console.error('Error on opening IndexedDB:', event.target.error);
-        };
-
             })
             .catch((error) => {
                 console.log(error);

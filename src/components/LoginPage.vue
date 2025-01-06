@@ -85,14 +85,44 @@ export default {
             })
                 .then(response => {
                     this.success = true;
-                    const { message,encKeyIv } = response.data
-                    let {key,iv} = encKeyIv
+                this.response = response.data;
+                this.userData = {
+                    username: "",
+                    email: "",
+                    password: "",
+                    confirmpw: ""
+                };
+                this.loading = false;  // Stop loading when request is successful
 
-                    key = key.data 
-                    iv = iv.data
-                    //please store key and iv this at indexedDB
-                     window.location.href = `http://localhost:8080/dashboard`
-               })
+                const encKeyFetch = axios.get(`${arr}/oauth/encKey/get`,{
+                withCredentials: true
+                });
+                const encKey = encKeyFetch.data.encKey;
+                const ivKey = encKeyFetch.data.ivKey;
+                const dbRequest = indexedDB.open('userKeysDB', 1);
+
+                dbRequest.onupgradeneeded = (event) => {
+                    let db = event.target.result;
+                    if (!db.objectStoreNames.contains('keys')) {
+                        db.createObjectStore('keys', { keyPath: 'id' });
+                    }
+                };
+                dbRequest.onsuccess = (event) => {
+                    const db = event.target.result;
+                    const transaction = db.transaction('keys', 'readwrite');
+                    const store = transaction.objectStore('keys');
+                    store.put({ id: 'encKey', value: encKey });
+                    store.put({ id: 'ivKey', value: ivKey });
+                    transaction.oncomplete = () => {
+                        console.log('encKey and ivKey stored successfully');
+                    };
+                };
+
+        dbRequest.onerror = (event) => {
+            console.error('Error on opening IndexedDB:', event.target.error);
+        };
+
+            })
                 .catch(error => {
                     this.error = true;
                     console.error("There was an error:", error);
